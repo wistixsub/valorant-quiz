@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0F1923;
+  --surface: #162433;
+  --surface2: #1F3040;
+  --red: #FF4655;
+  --red-dark: #CC2233;
+  --white: #ECE8E1;
+  --gray: #7B8D96;
+  --border: #2A3F52;
+  --green: #52E5A4;
+  --yellow: #E8C84B;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', sans-serif;
+  min-height: 100vh;
+}
+
+.choice-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--white);
+  transition: all 0.1s;
+  text-align: left;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.choice-btn:hover:not(:disabled) {
+  border-color: var(--red);
+  background: rgba(255, 70, 85, 0.13);
+}
+.choice-btn:disabled {
+  cursor: default;
+}
+.choice-correct {
+  border-color: var(--green) !important;
+  border-width: 2px !important;
+  background: rgba(82, 229, 164, 0.18) !important;
+  box-shadow: 0 0 0 1px rgba(82, 229, 164, 0.35), 0 0 12px rgba(82, 229, 164, 0.15) !important;
+}
+.choice-wrong {
+  border-color: var(--red) !important;
+  border-width: 2px !important;
+  background: rgba(255, 70, 85, 0.15) !important;
+  opacity: 0.7;
+}
+
+/* ===== Quiz layout: map overlay sizing ===== */
+/* スマホ(md未満): マップはビューポートの40%以下に制限 */
+.quiz-map-overlay {
+  max-height: 40svh;
+}
+/* PC(md以上): マップはカラム高さいっぱいに広げる */
+@media (min-width: 768px) {
+  .quiz-map-overlay {
+    max-height: none;
+  }
+}
