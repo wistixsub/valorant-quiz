@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MAPS } from "@/data/maps";
+import { getQuestionsByMap } from "@/data/questions";
 
 export default function Home() {
   return (
@@ -37,7 +38,7 @@ export default function Home() {
           状況読解 × 戦術論理クイズ
         </p>
         <p className="text-xs mt-2" style={{ color: "var(--gray)", opacity: 0.7 }}>
-          マップを選んで5問に挑戦。戦術的思考力を試そう。
+          マップを選んで挑戦。戦術的思考力を試そう。
         </p>
       </div>
 
@@ -99,7 +100,7 @@ export default function Home() {
                         border: "1px solid rgba(255,70,85,0.25)",
                       }}
                     >
-                      5問
+                      {getQuestionsByMap(map.id).length}問
                     </span>
                     <span
                       className="text-xs px-2 py-0.5 rounded"
