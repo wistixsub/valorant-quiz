@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const APP_URL = "https://valorant-quiz-eight.vercel.app";
-const OGP_IMAGE = "https://media.valorant-api.com/maps/2c9d57ec-4431-9c5e-2939-8f9ef6dd5cba/splash.png";
+const OGP_IMAGE = "/splash.png";
 
 export const metadata: Metadata = {
   title: "VALORANT 論理テスト | TACTICAL MIND",
