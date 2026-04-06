@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#0f1923"/>
+  <!-- Top -->
+  <rect x="14" y="3" width="4" height="7" fill="#ff4655"/>
+  <!-- Bottom -->
+  <rect x="14" y="22" width="4" height="7" fill="#ff4655"/>
+  <!-- Left -->
+  <rect x="3" y="14" width="7" height="4" fill="#ff4655"/>
+  <!-- Right -->
+  <rect x="22" y="14" width="7" height="4" fill="#ff4655"/>
+  <!-- Center dot -->
+  <rect x="14.5" y="14.5" width="3" height="3" fill="#ff4655"/>
+</svg>
