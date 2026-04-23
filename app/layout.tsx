@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
+
+const GA_ID = "G-T3LRXF3ST2";
 
 const APP_URL = "https://valorant-quiz-eight.vercel.app";
 const OGP_IMAGE = "/splash.png";
@@ -33,6 +36,18 @@ export default function RootLayout({
   return (
     <html lang="ja" className="h-full">
       <body className="min-h-full flex flex-col">
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
         {children}
         <footer className="w-full py-3 px-4 text-center" style={{ background: "var(--surface)", borderTop: "1px solid var(--border)" }}>
           <p className="text-xs" style={{ color: "var(--gray)", opacity: 0.45, lineHeight: 1.6 }}>
