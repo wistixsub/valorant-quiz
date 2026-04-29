@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { MapData, MapMarker } from "@/types/quiz";
 
@@ -20,6 +20,40 @@ const MARKER_SYMBOLS: Record<MapMarker["type"], string> = {
   spike: "★",
 };
 
+// All Valorant displayIcon images are 1024×1024 squares
+const MAP_ASPECT = 1;
+
+interface ContainOffset {
+  leftPct: number;
+  topPct: number;
+  wPct: number;
+  hPct: number;
+}
+
+function computeContainOffset(cw: number, ch: number): ContainOffset {
+  if (cw <= 0 || ch <= 0) return { leftPct: 0, topPct: 0, wPct: 1, hPct: 1 };
+  const containerAspect = cw / ch;
+  if (containerAspect > MAP_ASPECT) {
+    // Container is wider than the image — letterbox left/right
+    const imgW = ch * MAP_ASPECT;
+    return {
+      leftPct: (cw - imgW) / 2 / cw,
+      topPct: 0,
+      wPct: imgW / cw,
+      hPct: 1,
+    };
+  } else {
+    // Container is taller than the image — letterbox top/bottom
+    const imgH = cw / MAP_ASPECT;
+    return {
+      leftPct: 0,
+      topPct: (ch - imgH) / 2 / ch,
+      wPct: 1,
+      hPct: imgH / ch,
+    };
+  }
+}
+
 interface Props {
   map: MapData;
   markers?: MapMarker[];
@@ -28,6 +62,26 @@ interface Props {
 }
 
 export default function MapOverlay({ map, markers, className = "", style }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState<ContainOffset>({ leftPct: 0, topPct: 0, wPct: 1, hPct: 1 });
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const update = () => {
+      setOffset(computeContainOffset(el.offsetWidth, el.offsetHeight));
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const toLeft = (x: number) => `${(offset.leftPct + (x / 100) * offset.wPct) * 100}%`;
+  const toTop = (y: number) => `${(offset.topPct + (y / 100) * offset.hPct) * 100}%`;
+
   return (
     <div
       className={`rounded overflow-hidden flex flex-col ${className}`}
@@ -43,13 +97,12 @@ export default function MapOverlay({ map, markers, className = "", style }: Prop
         </span>
       </div>
 
-      {/* Map image with markers
-          スマホ: paddingBottom でアスペクト比を保ちつつ max-height でクリップ
-          PC(md+): flex-1 でカラム高さいっぱいに伸長 */}
+      {/* Map image with markers */}
       <div
+        ref={containerRef}
         className="relative w-full flex-1"
         style={{
-          minHeight: "min(56.25%, 42vw)",
+          minHeight: "min(42vw, 300px)",
           background: "#0a1520",
         }}
       >
@@ -67,8 +120,8 @@ export default function MapOverlay({ map, markers, className = "", style }: Prop
             key={`area-${i}`}
             className="absolute pointer-events-none"
             style={{
-              left: `${area.x}%`,
-              top: `${area.y}%`,
+              left: toLeft(area.x),
+              top: toTop(area.y),
               transform: 'translate(-50%, -50%)',
               zIndex: 5,
             }}
@@ -99,8 +152,8 @@ export default function MapOverlay({ map, markers, className = "", style }: Prop
               key={i}
               className="absolute flex flex-col items-center"
               style={{
-                left: `${marker.x}%`,
-                top: `${marker.y}%`,
+                left: toLeft(marker.x),
+                top: toTop(marker.y),
                 transform: "translate(-50%, -50%)",
                 zIndex: 10,
               }}
@@ -123,14 +176,13 @@ export default function MapOverlay({ map, markers, className = "", style }: Prop
               </div>
               {/* Label */}
               <div
-                className="text-center mt-0.5 px-1 rounded whitespace-nowrap"
+                className="text-center mt-0.5 px-1 rounded"
                 style={{
                   fontSize: 8,
+                  lineHeight: 1.3,
                   color: MARKER_COLORS[marker.type],
                   background: "rgba(10,21,32,0.88)",
-                  maxWidth: 64,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  maxWidth: 80,
                 }}
               >
                 {marker.label}
