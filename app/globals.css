@@ -67,6 +67,8 @@ body {
     max-height: none;
   }
   .quiz-body-wrapper {
+    /* flex: none で flex-1 (flex-basis:0%) が height を無視するのを防ぐ */
+    flex: none;
     height: calc(100svh - var(--header-total-h, 98px));
     overflow: hidden;
   }
