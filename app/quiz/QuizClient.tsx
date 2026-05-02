@@ -78,6 +78,7 @@ function PlayerBanner({ playerAgent, playerSide }: { playerAgent: string; player
         <div
           className="rounded-full overflow-hidden flex-shrink-0"
           style={{
+            position: "relative",
             width: 40,
             height: 40,
             border: `2px solid ${isAttack ? "#FF4655" : "#52E5A4"}`,
@@ -86,8 +87,7 @@ function PlayerBanner({ playerAgent, playerSide }: { playerAgent: string; player
           <Image
             src={info.icon}
             alt={playerAgent}
-            width={40}
-            height={40}
+            fill
             style={{ objectFit: "cover" }}
             unoptimized
           />
@@ -129,6 +129,7 @@ export default function QuizClient() {
   const [selected, setSelected] = useState<string | null>(null);
   const [answers, setAnswers] = useState<{ id: number; correct: boolean }[]>([]);
   const [done, setDone] = useState(false);
+  const rightColRef = useRef<HTMLDivElement>(null);
 
   const q = questions[idx];
   const answered = selected !== null;
@@ -168,6 +169,8 @@ export default function QuizClient() {
     } else {
       setIdx((i) => i + 1);
       setSelected(null);
+      window.scrollTo(0, 0);
+      if (rightColRef.current) rightColRef.current.scrollTop = 0;
     }
   }, [idx, questions.length]);
 
@@ -366,25 +369,15 @@ export default function QuizClient() {
 
       {/*
         ===== BODY AREA =====
-        PC (md+)  : flex-row 2カラム・高さ固定。左=マップ、右=スクロール可コンテンツ
-        スマホ    : 縦積み。マップは sticky で画面上部に貼り付く
+        PC (md+)  : flex-row 2カラム・高さ固定 (.quiz-body-wrapper)。右列のみスクロール
+        スマホ    : 縦積み・自然スクロール（overflow:hidden なし）
       */}
-      <div
-        className="flex-1 flex flex-col md:flex-row md:overflow-hidden"
-        style={{ height: "calc(100svh - var(--header-total-h, 98px))", overflow: "hidden" } as React.CSSProperties}
-      >
+      <div className="flex-1 flex flex-col md:flex-row md:overflow-hidden quiz-body-wrapper">
 
         {/* ---- 左カラム(PC) / 上部(スマホ): マップオーバーレイ ---- */}
-        <div
-          className="
-            md:w-1/2 flex-shrink-0 md:overflow-hidden md:flex md:flex-col
-            sticky md:static
-            z-10
-            px-3 pt-3 pb-1 md:pb-3
-          "
-          style={{ top: "var(--header-total-h, 98px)" }}
-        >
+        <div className="md:w-1/2 md:flex-shrink-0 md:overflow-hidden md:flex md:flex-col px-3 pt-3 pb-1 md:pb-3">
           <MapOverlay
+            key={q.id}
             map={map}
             markers={q.markers}
             playerSide={q.playerSide}
@@ -394,12 +387,8 @@ export default function QuizClient() {
 
         {/* ---- 右カラム(PC) / 下部(スマホ): 問題コンテンツ ---- */}
         <div
-          className="
-            flex-1
-            overflow-y-auto
-            px-3 py-4
-            flex flex-col gap-3
-          "
+          ref={rightColRef}
+          className="flex-1 md:overflow-y-auto px-3 py-4 flex flex-col gap-3"
         >
           {/* 操作キャラ・立場バナー */}
           <PlayerBanner playerAgent={q.playerAgent} playerSide={q.playerSide} />

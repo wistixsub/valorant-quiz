@@ -41,7 +41,6 @@ function computeContainOffset(cw: number, ch: number): ContainOffset {
   if (cw <= 0 || ch <= 0) return { leftPct: 0, topPct: 0, wPct: 1, hPct: 1 };
   const containerAspect = cw / ch;
   if (containerAspect > MAP_ASPECT) {
-    // Container is wider than the image — letterbox left/right
     const imgW = ch * MAP_ASPECT;
     return {
       leftPct: (cw - imgW) / 2 / cw,
@@ -50,7 +49,6 @@ function computeContainOffset(cw: number, ch: number): ContainOffset {
       hPct: 1,
     };
   } else {
-    // Container is taller than the image — letterbox top/bottom
     const imgH = cw / MAP_ASPECT;
     return {
       leftPct: 0,
@@ -59,6 +57,12 @@ function computeContainOffset(cw: number, ch: number): ContainOffset {
       hPct: imgH / ch,
     };
   }
+}
+
+interface ZoomTransform {
+  scale: number;
+  tx: number;
+  ty: number;
 }
 
 interface Props {
@@ -73,13 +77,22 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
   const MARKER_COLORS = getMarkerColors(playerSide);
   const containerRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState<ContainOffset>({ leftPct: 0, topPct: 0, wPct: 1, hPct: 1 });
+  const [containerW, setContainerW] = useState(0);
+  const [zoom, setZoom] = useState<ZoomTransform>({ scale: 1, tx: 0, ty: 0 });
+  const zoomRef = useRef<ZoomTransform>({ scale: 1, tx: 0, ty: 0 });
+  const pinchRef = useRef<{ dist: number } | null>(null);
+  const panRef = useRef<{ lastX: number; lastY: number } | null>(null);
 
+  // Resize observer: track container dimensions + letterbox offset
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const update = () => {
-      setOffset(computeContainOffset(el.offsetWidth, el.offsetHeight));
+      const w = el.offsetWidth;
+      const h = el.offsetHeight;
+      setContainerW(w);
+      setOffset(computeContainOffset(w, h));
     };
 
     update();
@@ -88,8 +101,94 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
     return () => ro.disconnect();
   }, []);
 
+  // Reset zoom when question changes (markers array reference changes)
+  useEffect(() => {
+    const reset: ZoomTransform = { scale: 1, tx: 0, ty: 0 };
+    zoomRef.current = reset;
+    setZoom(reset);
+  }, [markers]);
+
+  // Non-passive touch listeners for pinch-zoom and pan
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const getDistance = (t1: Touch, t2: Touch) =>
+      Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+
+    const clampTx = (tx: number, scale: number) => {
+      const max = (el.offsetWidth * (scale - 1)) / 2;
+      return Math.min(max, Math.max(-max, tx));
+    };
+    const clampTy = (ty: number, scale: number) => {
+      const max = (el.offsetHeight * (scale - 1)) / 2;
+      return Math.min(max, Math.max(-max, ty));
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        pinchRef.current = { dist: getDistance(e.touches[0], e.touches[1]) };
+        panRef.current = null;
+      } else if (e.touches.length === 1) {
+        panRef.current = { lastX: e.touches[0].clientX, lastY: e.touches[0].clientY };
+        pinchRef.current = null;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && pinchRef.current) {
+        e.preventDefault();
+        const newDist = getDistance(e.touches[0], e.touches[1]);
+        const rawScale = zoomRef.current.scale * (newDist / pinchRef.current.dist);
+        const newScale = Math.min(4, Math.max(1, rawScale));
+        const newTx = clampTx(zoomRef.current.tx, newScale);
+        const newTy = clampTy(zoomRef.current.ty, newScale);
+        const next: ZoomTransform = { scale: newScale, tx: newTx, ty: newTy };
+        zoomRef.current = next;
+        setZoom(next);
+        pinchRef.current.dist = newDist;
+      } else if (e.touches.length === 1 && panRef.current && zoomRef.current.scale > 1) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - panRef.current.lastX;
+        const dy = e.touches[0].clientY - panRef.current.lastY;
+        const newTx = clampTx(zoomRef.current.tx + dx, zoomRef.current.scale);
+        const newTy = clampTy(zoomRef.current.ty + dy, zoomRef.current.scale);
+        const next: ZoomTransform = { ...zoomRef.current, tx: newTx, ty: newTy };
+        zoomRef.current = next;
+        setZoom(next);
+        panRef.current = { lastX: e.touches[0].clientX, lastY: e.touches[0].clientY };
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) pinchRef.current = null;
+      if (e.touches.length === 0) panRef.current = null;
+    };
+
+    el.addEventListener("touchstart", handleTouchStart, { passive: true });
+    el.addEventListener("touchmove", handleTouchMove, { passive: false });
+    el.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      el.removeEventListener("touchstart", handleTouchStart);
+      el.removeEventListener("touchmove", handleTouchMove);
+      el.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, []);
+
   const toLeft = (x: number) => `${(offset.leftPct + (x / 100) * offset.wPct) * 100}%`;
-  const toTop = (y: number) => `${(offset.topPct + (y / 100) * offset.hPct) * 100}%`;
+  const toTop  = (y: number) => `${(offset.topPct  + (y / 100) * offset.hPct) * 100}%`;
+
+  // Scale marker size proportionally to container width (12–20px range)
+  const markerSize   = containerW > 0 ? Math.round(Math.max(12, Math.min(20, containerW * 0.045))) : 18;
+  const labelFontSz  = containerW > 0 ? Math.max(7, Math.round(containerW * 0.022)) : 8;
+  const markerFontSz = Math.max(7, Math.round(markerSize * 0.5));
+
+  const resetZoom = () => {
+    const reset: ZoomTransform = { scale: 1, tx: 0, ty: 0 };
+    zoomRef.current = reset;
+    setZoom(reset);
+  };
 
   return (
     <div
@@ -104,6 +203,23 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
         <span className="text-xs uppercase tracking-widest font-bold" style={{ color: "var(--gray)" }}>
           TACTICAL MAP — {map.nameEn.toUpperCase()}
         </span>
+        {zoom.scale > 1.05 && (
+          <button
+            onClick={resetZoom}
+            style={{
+              marginLeft: "auto",
+              fontSize: 10,
+              color: "var(--gray)",
+              background: "transparent",
+              border: "1px solid var(--border)",
+              borderRadius: 3,
+              padding: "1px 6px",
+              cursor: "pointer",
+            }}
+          >
+            リセット
+          </button>
+        )}
       </div>
 
       {/* Map image with markers */}
@@ -113,95 +229,111 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
         style={{
           minHeight: "min(42vw, 300px)",
           background: "#0a1520",
+          overflow: "hidden",
+          touchAction: zoom.scale > 1 ? "none" : "pan-y",
         }}
       >
-        <Image
-          src={map.displayIcon}
-          alt={`${map.nameEn} tactical map`}
-          fill
-          className="object-contain"
-          unoptimized
-        />
+        {/* Transformable inner wrapper (pinch-zoom / pan) */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            transform: `translate(${zoom.tx}px, ${zoom.ty}px) scale(${zoom.scale})`,
+            transformOrigin: "center center",
+            willChange: "transform",
+          }}
+        >
+          {/* position:relative needed by Next/Image fill */}
+          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+            <Image
+              src={map.displayIcon}
+              alt={`${map.nameEn} tactical map`}
+              fill
+              className="object-contain"
+              unoptimized
+            />
 
-        {/* Area Labels */}
-        {map.areaLabels?.map((area, i) => (
-          <div
-            key={`area-${i}`}
-            className="absolute pointer-events-none"
-            style={{
-              left: toLeft(area.x),
-              top: toTop(area.y),
-              transform: 'translate(-50%, -50%)',
-              zIndex: 5,
-            }}
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                fontSize: 9,
-                fontWeight: 700,
-                color: 'rgba(255,255,255,0.55)',
-                background: 'rgba(0,0,0,0.40)',
-                padding: '1px 5px',
-                borderRadius: 3,
-                letterSpacing: '0.04em',
-                whiteSpace: 'nowrap',
-                lineHeight: 1.5,
-              }}
-            >
-              {area.label}
-            </span>
+            {/* Area Labels */}
+            {map.areaLabels?.map((area, i) => (
+              <div
+                key={`area-${i}`}
+                className="absolute pointer-events-none"
+                style={{
+                  left: toLeft(area.x),
+                  top: toTop(area.y),
+                  transform: "translate(-50%, -50%)",
+                  zIndex: 5,
+                }}
+              >
+                <span
+                  style={{
+                    display: "inline-block",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.55)",
+                    background: "rgba(0,0,0,0.40)",
+                    padding: "1px 5px",
+                    borderRadius: 3,
+                    letterSpacing: "0.04em",
+                    whiteSpace: "nowrap",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {area.label}
+                </span>
+              </div>
+            ))}
+
+            {/* Markers */}
+            {markers &&
+              markers.map((marker, i) => (
+                <div
+                  key={i}
+                  className="absolute flex flex-col items-center"
+                  title={marker.label}
+                  style={{
+                    left: toLeft(marker.x),
+                    top: toTop(marker.y),
+                    transform: "translate(-50%, -50%)",
+                    zIndex: 10,
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "30"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "10"; }}
+                >
+                  {/* Marker dot */}
+                  <div
+                    className="flex items-center justify-center rounded-full font-bold"
+                    style={{
+                      width: markerSize,
+                      height: markerSize,
+                      background: marker.confirmed === false ? "transparent" : MARKER_COLORS[marker.type],
+                      border: `2px solid ${MARKER_COLORS[marker.type]}`,
+                      color: marker.confirmed === false ? MARKER_COLORS[marker.type] : "#fff",
+                      fontSize: markerFontSz,
+                      lineHeight: 1,
+                      boxShadow: `0 0 6px ${MARKER_COLORS[marker.type]}cc`,
+                    }}
+                  >
+                    {marker.confirmed === false ? "?" : MARKER_SYMBOLS[marker.type]}
+                  </div>
+                  {/* Label */}
+                  <div
+                    className="text-center mt-0.5 px-1 rounded"
+                    style={{
+                      fontSize: labelFontSz,
+                      lineHeight: 1.3,
+                      color: MARKER_COLORS[marker.type],
+                      background: "rgba(5,10,18,0.92)",
+                      border: `1px solid ${MARKER_COLORS[marker.type]}55`,
+                      maxWidth: 90,
+                    }}
+                  >
+                    {marker.label}
+                  </div>
+                </div>
+              ))}
           </div>
-        ))}
-
-        {/* Markers */}
-        {markers &&
-          markers.map((marker, i) => (
-            <div
-              key={i}
-              className="absolute flex flex-col items-center"
-              title={marker.label}
-              style={{
-                left: toLeft(marker.x),
-                top: toTop(marker.y),
-                transform: "translate(-50%, -50%)",
-                zIndex: 10,
-              }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "30"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "10"; }}
-            >
-              {/* Marker dot */}
-              <div
-                className="flex items-center justify-center rounded-full font-bold"
-                style={{
-                  width: 18,
-                  height: 18,
-                  background: marker.confirmed === false ? "transparent" : MARKER_COLORS[marker.type],
-                  border: `2px solid ${MARKER_COLORS[marker.type]}`,
-                  color: marker.confirmed === false ? MARKER_COLORS[marker.type] : "#fff",
-                  fontSize: 9,
-                  lineHeight: 1,
-                  boxShadow: `0 0 6px ${MARKER_COLORS[marker.type]}cc`,
-                }}
-              >
-                {marker.confirmed === false ? "?" : MARKER_SYMBOLS[marker.type]}
-              </div>
-              {/* Label */}
-              <div
-                className="text-center mt-0.5 px-1 rounded"
-                style={{
-                  fontSize: 8,
-                  lineHeight: 1.3,
-                  color: MARKER_COLORS[marker.type],
-                  background: "rgba(5,10,18,0.92)",
-                  border: `1px solid ${MARKER_COLORS[marker.type]}55`,
-                  maxWidth: 90,
-                }}
-              >
-                {marker.label}
-              </div>
-            </div>
-          ))}
+        </div>
       </div>
 
       {/* Legend */}
