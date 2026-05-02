@@ -371,7 +371,7 @@ export default function QuizClient() {
       */}
       <div
         className="flex-1 flex flex-col md:flex-row md:overflow-hidden"
-        style={{ height: "calc(100svh - var(--header-total-h, 98px))" } as React.CSSProperties}
+        style={{ height: "calc(100svh - var(--header-total-h, 98px))", overflow: "hidden" } as React.CSSProperties}
       >
 
         {/* ---- 左カラム(PC) / 上部(スマホ): マップオーバーレイ ---- */}
@@ -396,7 +396,7 @@ export default function QuizClient() {
         <div
           className="
             flex-1
-            md:overflow-y-auto
+            overflow-y-auto
             px-3 py-4
             flex flex-col gap-3
           "

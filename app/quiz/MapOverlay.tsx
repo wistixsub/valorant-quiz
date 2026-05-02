@@ -160,12 +160,15 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
             <div
               key={i}
               className="absolute flex flex-col items-center"
+              title={marker.label}
               style={{
                 left: toLeft(marker.x),
                 top: toTop(marker.y),
                 transform: "translate(-50%, -50%)",
                 zIndex: 10,
               }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "30"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "10"; }}
             >
               {/* Marker dot */}
               <div
@@ -178,7 +181,7 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
                   color: marker.confirmed === false ? MARKER_COLORS[marker.type] : "#fff",
                   fontSize: 9,
                   lineHeight: 1,
-                  boxShadow: `0 0 5px ${MARKER_COLORS[marker.type]}88`,
+                  boxShadow: `0 0 6px ${MARKER_COLORS[marker.type]}cc`,
                 }}
               >
                 {marker.confirmed === false ? "?" : MARKER_SYMBOLS[marker.type]}
@@ -190,8 +193,12 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
                   fontSize: 8,
                   lineHeight: 1.3,
                   color: MARKER_COLORS[marker.type],
-                  background: "rgba(10,21,32,0.88)",
-                  maxWidth: 80,
+                  background: "rgba(5,10,18,0.92)",
+                  border: `1px solid ${MARKER_COLORS[marker.type]}55`,
+                  maxWidth: 72,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 {marker.label}
