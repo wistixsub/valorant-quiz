@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "generate-maps": "ts-node --project tsconfig.scripts.json scripts/generate-labeled-maps.ts"
   },
   "dependencies": {
     "konva": "^10.2.3",
