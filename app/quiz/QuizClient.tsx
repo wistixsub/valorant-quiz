@@ -595,7 +595,7 @@ export default function QuizClient() {
                       color: ev.team === "atk" ? "var(--red)" : "var(--green)",
                     }}
                   >
-                    {ev.team === "atk" ? "敵" : "味方"}
+                    {ev.team === (q.playerSide === "attack" ? "atk" : "def") ? "味方" : "敵"}
                   </span>
                   <span
                     className="font-bold flex-shrink-0"
