@@ -377,7 +377,7 @@ export default function QuizClient() {
         {/* ---- 左カラム(PC) / 上部(スマホ): マップオーバーレイ ---- */}
         <div
           className="
-            md:w-1/2 md:flex-shrink-0 md:overflow-hidden md:flex md:flex-col
+            md:w-1/2 flex-shrink-0 md:overflow-hidden md:flex md:flex-col
             sticky md:static
             z-10
             px-3 pt-3 pb-1 md:pb-3

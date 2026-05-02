@@ -195,10 +195,7 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
                   color: MARKER_COLORS[marker.type],
                   background: "rgba(5,10,18,0.92)",
                   border: `1px solid ${MARKER_COLORS[marker.type]}55`,
-                  maxWidth: 72,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  maxWidth: 90,
                 }}
               >
                 {marker.label}
