@@ -179,9 +179,11 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
   const toLeft = (x: number) => `${(offset.leftPct + (x / 100) * offset.wPct) * 100}%`;
   const toTop  = (y: number) => `${(offset.topPct  + (y / 100) * offset.hPct) * 100}%`;
 
-  // Scale marker size proportionally to container width (12–20px range)
-  const markerSize   = containerW > 0 ? Math.round(Math.max(12, Math.min(20, containerW * 0.045))) : 18;
-  const labelFontSz  = containerW > 0 ? Math.max(7, Math.round(containerW * 0.022)) : 8;
+  // Scale marker size with container width so mobile markers don't dwarf the map.
+  // At ~700px (desktop half-pane) → 18px marker / 8px label (same as original fixed sizes).
+  // At ~350px (mobile) → 12px marker / 7px label.
+  const markerSize   = containerW > 0 ? Math.round(Math.max(12, Math.min(18, containerW * 0.026))) : 18;
+  const labelFontSz  = containerW > 0 ? Math.max(7, Math.round(containerW * 0.011)) : 8;
   const markerFontSz = Math.max(7, Math.round(markerSize * 0.5));
 
   const resetZoom = () => {
