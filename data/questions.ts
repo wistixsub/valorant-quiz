@@ -67,8 +67,8 @@ export const QUESTIONS: Question[] = [
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
       { x: 38, y: 33, type: 'skill', label: 'ブリムストーンのULT', confirmed: true },
-      { x: 65, y: 40, type: 'enemy', label: 'レイナ', confirmed: true },
-      { x: 68, y: 44, type: 'enemy', label: 'チェンバー（スパイク）', confirmed: true },
+      { x: 65, y: 28, type: 'enemy', label: 'レイナ', confirmed: true },
+      { x: 68, y: 28, type: 'enemy', label: 'チェンバー（スパイク）', confirmed: true },
     ],
   },
   {
@@ -243,7 +243,7 @@ export const QUESTIONS: Question[] = [
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
       { x: 50, y: 48, type: 'ally', label: '攻め（Mid制圧）', confirmed: true },
-      { x: 50, y: 40, type: 'ally', label: 'スパイク持ち', confirmed: true },
+      { x: 50, y: 32, type: 'ally', label: 'スパイク持ち', confirmed: true },
       { x: 28, y: 28, type: 'unknown', label: '守り×2（A）', confirmed: false },
       { x: 78, y: 28, type: 'unknown', label: '守り×2（C）', confirmed: false },
     ],
@@ -561,9 +561,9 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Jett', 'Raze'], def: ['Reyna'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 65, y: 42, type: 'skill', label: 'スパイク', confirmed: true },
-      { x: 62, y: 40, type: 'ally', label: 'あなた（Jett）', confirmed: true },
-      { x: 68, y: 44, type: 'ally', label: 'レイズ', confirmed: true },
+      { x: 65, y: 26, type: 'skill', label: 'スパイク', confirmed: true },
+      { x: 62, y: 26, type: 'ally', label: 'あなた（Jett）', confirmed: true },
+      { x: 68, y: 26, type: 'ally', label: 'レイズ', confirmed: true },
       { x: 58, y: 58, type: 'enemy', label: 'レイナ（CT方向）', confirmed: false },
     ],
   },
@@ -596,7 +596,7 @@ export const QUESTIONS: Question[] = [
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
       { x: 22, y: 26, type: 'skill', label: 'スパイク（Aサイト）', confirmed: true },
-      { x: 68, y: 38, type: 'ally', label: 'あなた（Sova/Bサイト）', confirmed: true },
+      { x: 68, y: 28, type: 'ally', label: 'あなた（Sova/Bサイト）', confirmed: true },
     ],
   },
   {
@@ -629,9 +629,9 @@ export const QUESTIONS: Question[] = [
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
       { x: 54, y: 52, type: 'ally', label: 'あなた（Raze/フッカー前）', confirmed: true },
-      { x: 60, y: 38, type: 'ally', label: 'ジェット・ブリーチ（Bメイン）', confirmed: true },
-      { x: 67, y: 36, type: 'skill', label: 'サイファーのワイヤー', confirmed: true },
-      { x: 70, y: 30, type: 'unknown', label: '守り側（推測）', confirmed: false },
+      { x: 62, y: 30, type: 'ally', label: 'ジェット・ブリーチ（Bメイン）', confirmed: true },
+      { x: 67, y: 28, type: 'skill', label: 'サイファーのワイヤー', confirmed: true },
+      { x: 70, y: 26, type: 'unknown', label: '守り側（推測）', confirmed: false },
     ],
   },
   {
@@ -663,11 +663,11 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Brimstone', 'Neon', 'Fade'], def: ['Viper'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 36, y: 42, type: 'ally', label: 'あなた（Brimstone）', confirmed: true },
-      { x: 32, y: 38, type: 'ally', label: 'ネオン', confirmed: true },
-      { x: 38, y: 34, type: 'ally', label: 'フェイド', confirmed: true },
-      { x: 42, y: 55, type: 'skill', label: 'ヴァイパーのポイズンクラウド', confirmed: true },
-      { x: 44, y: 58, type: 'unknown', label: 'ヴァイパー（CT内）', confirmed: false },
+      { x: 22, y: 28, type: 'ally', label: 'あなた（Brimstone）', confirmed: true },
+      { x: 20, y: 26, type: 'ally', label: 'ネオン', confirmed: true },
+      { x: 24, y: 26, type: 'ally', label: 'フェイド', confirmed: true },
+      { x: 30, y: 28, type: 'skill', label: 'ヴァイパーのポイズンクラウド', confirmed: true },
+      { x: 34, y: 30, type: 'unknown', label: 'ヴァイパー（CT内）', confirmed: false },
     ],
   },
   {
@@ -700,9 +700,9 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Jett', 'Breach', 'Skye', 'Neon', 'Sage'], def: ['Chamber'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 36, y: 38, type: 'enemy', label: '攻め側（Aサイト）', confirmed: true },
-      { x: 68, y: 38, type: 'ally', label: 'あなた（Chamber/Bサイト）', confirmed: true },
-      { x: 68, y: 40, type: 'skill', label: 'TPアンカー', confirmed: true },
+      { x: 22, y: 26, type: 'enemy', label: '攻め側（Aサイト）', confirmed: true },
+      { x: 68, y: 28, type: 'ally', label: 'あなた（Chamber/Bサイト）', confirmed: true },
+      { x: 68, y: 30, type: 'skill', label: 'TPアンカー', confirmed: true },
       { x: 50, y: 58, type: 'unknown', label: 'CT（移動ルート）', confirmed: false },
     ],
   },
@@ -772,8 +772,8 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Sova', 'Breach', 'Jett', 'Reyna', 'Sage'], def: ['Viper', 'Cypher', 'Killjoy', 'Chamber', 'Omen'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 44, y: 38, type: 'ally', label: 'あなた（Viper/B）', confirmed: true },
-      { x: 46, y: 36, type: 'ally', label: 'サイファー（B）', confirmed: true },
+      { x: 48, y: 26, type: 'ally', label: 'あなた（Viper/B）', confirmed: true },
+      { x: 52, y: 24, type: 'ally', label: 'サイファー（B）', confirmed: true },
       { x: 76, y: 26, type: 'skill', label: 'ドローン（C方面）', confirmed: true },
       { x: 82, y: 36, type: 'unknown', label: 'C方面（情報多数）', confirmed: false },
     ],
@@ -806,8 +806,8 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Jett', 'Reyna', 'Chamber'], def: ['Omen'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 44, y: 35, type: 'skill', label: 'スパイク（Bサイト）', confirmed: true },
-      { x: 42, y: 33, type: 'enemy', label: '攻め側3人', confirmed: true },
+      { x: 50, y: 24, type: 'skill', label: 'スパイク（Bサイト）', confirmed: true },
+      { x: 48, y: 26, type: 'enemy', label: '攻め側3人', confirmed: true },
       { x: 52, y: 55, type: 'ally', label: 'あなた（Omen/CT外）', confirmed: true },
     ],
   },
@@ -876,7 +876,7 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Neon', 'Jett', 'Reyna', 'Breach', 'Skye'], def: ['Cypher'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 44, y: 38, type: 'enemy', label: '攻め側5人（Bサイト）', confirmed: true },
+      { x: 50, y: 26, type: 'enemy', label: '攻め側5人（Bサイト）', confirmed: true },
       { x: 52, y: 58, type: 'ally', label: 'あなた（Cypher/CT付近）', confirmed: true },
     ],
   },
@@ -911,7 +911,7 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Sova', 'Jett', 'Breach', 'Reyna', 'Sage'], def: ['Cypher', 'Killjoy', 'Omen', 'Viper', 'Chamber'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 50, y: 40, type: 'ally', label: 'ミッドタワー（制圧済み）', confirmed: true },
+      { x: 50, y: 34, type: 'ally', label: 'ミッドタワー（制圧済み）', confirmed: true },
       { x: 22, y: 28, type: 'enemy', label: '守り側（A：増加の可能性）', confirmed: false },
       { x: 72, y: 28, type: 'enemy', label: '守り側（B：減少の可能性）', confirmed: false },
       { x: 52, y: 55, type: 'skill', label: 'Omenのローテート経路', confirmed: false },
@@ -985,7 +985,7 @@ export const QUESTIONS: Question[] = [
       { x: 22, y: 28, type: 'enemy', label: '守り側3人（A）', confirmed: true },
       { x: 72, y: 28, type: 'enemy', label: '守り側2人（B）', confirmed: true },
       { x: 26, y: 40, type: 'skill', label: 'フェイクフットステップ（Aランプ）', confirmed: true },
-      { x: 50, y: 55, type: 'ally', label: '攻め側現在地', confirmed: true },
+      { x: 50, y: 45, type: 'ally', label: '攻め側現在地', confirmed: true },
     ],
   },
   {
