@@ -31,7 +31,7 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Skye', 'Fade', 'Jett', 'Omen', 'Sage'], def: ['Cypher', 'Killjoy', 'Viper', 'KAY/O', 'Chamber'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 37, y: 47, type: 'ally', label: 'スカイ（Aショート）', confirmed: true },
+      { x: 37, y: 47, type: 'enemy', label: 'スカイ（Aショート）', confirmed: true },
       { x: 40, y: 54, type: 'skill', label: 'フェイドのホーント（A小部屋）', confirmed: true },
       { x: 60, y: 47, type: 'ally', label: 'ケイオー（Bショート）', confirmed: true },
       { x: 71, y: 75, type: 'unknown', label: 'B方面（動きなし）', confirmed: false },
@@ -210,7 +210,7 @@ export const QUESTIONS: Question[] = [
     markers: [
       { x: 28, y: 60, type: 'enemy', label: '守り×2（Aショート）', confirmed: true },
       { x: 78, y: 62, type: 'enemy', label: '守り×1（Cロング）', confirmed: true },
-      { x: 50, y: 52, type: 'enemy', label: 'オーメン（Bミッド）', confirmed: true },
+      { x: 50, y: 52, type: 'ally', label: 'オーメン（Bミッド）', confirmed: true },
     ],
   },
   {

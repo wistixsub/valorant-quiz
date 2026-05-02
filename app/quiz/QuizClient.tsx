@@ -387,6 +387,7 @@ export default function QuizClient() {
           <MapOverlay
             map={map}
             markers={q.markers}
+            playerSide={q.playerSide}
             className="quiz-map-overlay flex-1"
           />
         </div>

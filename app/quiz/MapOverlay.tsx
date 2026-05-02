@@ -4,13 +4,20 @@ import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { MapData, MapMarker } from "@/types/quiz";
 
-const MARKER_COLORS: Record<MapMarker["type"], string> = {
-  enemy: "#FF4655",
-  ally: "#52E5A4",
-  unknown: "#C4C4C4",
-  skill: "#FFD700",
-  spike: "#FF8C00",
-};
+const ATTACK_COLOR = "#FF4655";
+const DEFENSE_COLOR = "#52E5A4";
+
+function getMarkerColors(playerSide?: "attack" | "defense"): Record<MapMarker["type"], string> {
+  const allyColor  = playerSide === "attack" ? ATTACK_COLOR  : DEFENSE_COLOR;
+  const enemyColor = playerSide === "attack" ? DEFENSE_COLOR : ATTACK_COLOR;
+  return {
+    ally:    allyColor,
+    enemy:   enemyColor,
+    unknown: "#C4C4C4",
+    skill:   "#FFD700",
+    spike:   "#FF8C00",
+  };
+}
 
 const MARKER_SYMBOLS: Record<MapMarker["type"], string> = {
   enemy: "×",
@@ -57,11 +64,13 @@ function computeContainOffset(cw: number, ch: number): ContainOffset {
 interface Props {
   map: MapData;
   markers?: MapMarker[];
+  playerSide?: "attack" | "defense";
   className?: string;
   style?: React.CSSProperties;
 }
 
-export default function MapOverlay({ map, markers, className = "", style }: Props) {
+export default function MapOverlay({ map, markers, playerSide, className = "", style }: Props) {
+  const MARKER_COLORS = getMarkerColors(playerSide);
   const containerRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState<ContainOffset>({ leftPct: 0, topPct: 0, wPct: 1, hPct: 1 });
 
