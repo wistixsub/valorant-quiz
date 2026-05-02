@@ -35,6 +35,7 @@ export const QUESTIONS: Question[] = [
       { x: 40, y: 54, type: 'skill', label: 'フェイドのホーント（A小部屋）', confirmed: true },
       { x: 60, y: 47, type: 'ally', label: 'ケイオー（Bショート）', confirmed: true },
       { x: 71, y: 75, type: 'unknown', label: 'B方面（動きなし）', confirmed: false },
+      { x: 68, y: 74, type: 'ally', label: 'あなた（オーメン/Bサイト）', confirmed: true },
     ],
   },
   {
@@ -69,6 +70,7 @@ export const QUESTIONS: Question[] = [
       { x: 37, y: 47, type: 'skill', label: 'ブリムストーンのULT（Aショート）', confirmed: true },
       { x: 68, y: 53, type: 'enemy', label: 'レイナ（Bウィンドウ）', confirmed: true },
       { x: 71, y: 75, type: 'enemy', label: 'チェンバー（スパイク/Bサイト）', confirmed: true },
+      { x: 27, y: 63, type: 'ally', label: 'あなた（ケイオー/Aサイト）', confirmed: true },
     ],
   },
   {
@@ -139,6 +141,7 @@ export const QUESTIONS: Question[] = [
       { x: 37, y: 47, type: 'skill', label: 'ヴァイパーのオーブ（Aショート）', confirmed: true },
       { x: 52, y: 58, type: 'skill', label: 'サイファーのケージ（B出口）', confirmed: true },
       { x: 81, y: 48, type: 'enemy', label: '敵×2（Bロング）', confirmed: true },
+      { x: 68, y: 74, type: 'ally', label: 'あなた（キルジョイ/Bサイト）', confirmed: true },
     ],
   },
   {
@@ -210,7 +213,7 @@ export const QUESTIONS: Question[] = [
     markers: [
       { x: 28, y: 60, type: 'enemy', label: '守り×2（Aショート）', confirmed: true },
       { x: 78, y: 62, type: 'enemy', label: '守り×1（Cロング）', confirmed: true },
-      { x: 50, y: 52, type: 'ally', label: 'オーメン（Bミッド）', confirmed: true },
+      { x: 50, y: 52, type: 'ally', label: 'あなた（オーメン/Bミッド）', confirmed: true },
     ],
   },
   {
@@ -242,7 +245,7 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Omen', 'Jett', 'Skye', 'Breach', 'KAY/O'], def: ['Sage', 'Cypher', 'Raze', 'Killjoy'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 50, y: 52, type: 'ally', label: '攻め（Mid制圧）', confirmed: true },
+      { x: 50, y: 52, type: 'ally', label: 'あなた（ブリーチ/Bミッド）', confirmed: true },
       { x: 50, y: 68, type: 'ally', label: 'スパイク持ち', confirmed: true },
       { x: 28, y: 72, type: 'unknown', label: '守り×2（A）', confirmed: false },
       { x: 78, y: 72, type: 'unknown', label: '守り×2（C）', confirmed: false },
@@ -283,6 +286,7 @@ export const QUESTIONS: Question[] = [
       { x: 74, y: 58, type: 'enemy', label: 'レイズ（C方向）', confirmed: true },
       { x: 28, y: 60, type: 'ally', label: 'スカイ（Aショート）', confirmed: true },
       { x: 26, y: 72, type: 'unknown', label: 'A（手薄？）', confirmed: false },
+      { x: 26, y: 62, type: 'ally', label: 'あなた（セージ/Aショート）', confirmed: true },
     ],
   },
   {
@@ -318,6 +322,7 @@ export const QUESTIONS: Question[] = [
       { x: 70, y: 78, type: 'ally', label: 'ケイオー（C）', confirmed: true },
       { x: 50, y: 62, type: 'unknown', label: '守り×2（B）', confirmed: false },
       { x: 26, y: 72, type: 'unknown', label: '守り×2（A）', confirmed: false },
+      { x: 72, y: 58, type: 'ally', label: 'あなた（オーメン/C前）', confirmed: true },
     ],
   },
   {
@@ -390,6 +395,7 @@ export const QUESTIONS: Question[] = [
       { x: 40, y: 78, type: 'enemy', label: '守り×1（Aタワー）', confirmed: true },
       { x: 52, y: 60, type: 'enemy', label: '守り×2（Bミッド）', confirmed: true },
       { x: 50, y: 62, type: 'skill', label: 'オーメンのスモーク', confirmed: true },
+      { x: 56, y: 52, type: 'ally', label: 'あなた（ブリーチ/ミッド）', confirmed: true },
     ],
   },
   {
@@ -459,6 +465,7 @@ export const QUESTIONS: Question[] = [
       { x: 40, y: 78, type: 'skill', label: 'ヴァイパーのオーブ', confirmed: true },
       { x: 38, y: 78, type: 'unknown', label: 'Aタワー（空き）', confirmed: true },
       { x: 22, y: 72, type: 'unknown', label: 'Aサイト', confirmed: false },
+      { x: 46, y: 68, type: 'ally', label: 'あなた（ジェット/Aメイン）', confirmed: true },
     ],
   },
   {
@@ -843,7 +850,7 @@ export const QUESTIONS: Question[] = [
       { x: 26, y: 58, type: 'enemy', label: '守り側2人（Aロング）', confirmed: true },
       { x: 28, y: 80, type: 'skill', label: 'ヴァイパーのクラウド（Aロビー）', confirmed: true },
       { x: 44, y: 64, type: 'unknown', label: 'B（Killjoy推測）', confirmed: false },
-      { x: 36, y: 50, type: 'ally', label: '攻め側（現在地）', confirmed: true },
+      { x: 36, y: 50, type: 'ally', label: 'あなた（ブリーチ）', confirmed: true },
     ],
   },
   {
@@ -915,6 +922,7 @@ export const QUESTIONS: Question[] = [
       { x: 22, y: 72, type: 'enemy', label: '守り側（A：増加の可能性）', confirmed: false },
       { x: 72, y: 72, type: 'enemy', label: '守り側（B：減少の可能性）', confirmed: false },
       { x: 52, y: 45, type: 'skill', label: 'Omenのローテート経路', confirmed: false },
+      { x: 48, y: 68, type: 'ally', label: 'あなた（ソーヴァ/トップ）', confirmed: true },
     ],
   },
   {
@@ -985,7 +993,7 @@ export const QUESTIONS: Question[] = [
       { x: 22, y: 72, type: 'enemy', label: '守り側3人（A）', confirmed: true },
       { x: 72, y: 72, type: 'enemy', label: '守り側2人（B）', confirmed: true },
       { x: 26, y: 60, type: 'skill', label: 'フェイクフットステップ（Aランプ）', confirmed: true },
-      { x: 50, y: 55, type: 'ally', label: '攻め側現在地', confirmed: true },
+      { x: 50, y: 55, type: 'ally', label: 'あなた（ヨル/現在地）', confirmed: true },
     ],
   },
   {
@@ -1056,7 +1064,7 @@ export const QUESTIONS: Question[] = [
       { x: 62, y: 56, type: 'enemy', label: 'キルジョイ・オーメン（Bメイン）', confirmed: true },
       { x: 60, y: 58, type: 'skill', label: 'キルジョイのターレット', confirmed: true },
       { x: 66, y: 72, type: 'skill', label: 'ヴァイパーのスモーク（Bサイト入口）', confirmed: true },
-      { x: 52, y: 50, type: 'ally', label: '攻め側5人', confirmed: true },
+      { x: 52, y: 50, type: 'ally', label: 'あなた（ブリーチ/攻め側）', confirmed: true },
     ],
   },
 ];
