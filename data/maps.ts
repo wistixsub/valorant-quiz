@@ -33,7 +33,7 @@ export const MAPS: MapData[] = [
       { x: 25, y: 42, label: 'A ロング' },
       { x: 50, y: 22, label: 'B サイト' },
       { x: 50, y: 52, label: 'B ミッド' },
-      { x: 80, y: 20, label: 'C サイト' },
+      { x: 74, y: 20, label: 'C サイト' },
       { x: 78, y: 40, label: 'C ロング' },
       { x: 70, y: 54, label: 'C ガレージ' },
     ],
