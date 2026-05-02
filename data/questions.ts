@@ -173,7 +173,7 @@ export const QUESTIONS: Question[] = [
     markers: [
       { x: 24, y: 28, type: 'spike', label: 'スパイク', confirmed: true },
       { x: 35, y: 40, type: 'enemy', label: '敵（Aショート）', confirmed: true },
-      { x: 20, y: 22, type: 'enemy', label: '敵（ヘブン下）', confirmed: true },
+      { x: 22, y: 26, type: 'enemy', label: '敵（ヘブン下）', confirmed: true },
       { x: 78, y: 40, type: 'ally', label: 'あなた（Bロング）', confirmed: true },
     ],
   },
