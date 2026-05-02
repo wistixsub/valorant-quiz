@@ -285,58 +285,65 @@ export default function MapOverlay({ map, markers, playerSide, className = "", s
                 </span>
               </div>
             ))}
-          </div>
-        </div>
 
-        {/* Marker layer — NOT transformed; stays fixed regardless of zoom/pan */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 10 }}>
-          {markers &&
-            markers.map((marker, i) => (
-              <div
-                key={i}
-                className="absolute flex flex-col items-center"
-                title={marker.label}
-                style={{
-                  left: toLeft(marker.x),
-                  top: toTop(marker.y),
-                  transform: "translate(-50%, -50%)",
-                  zIndex: 10,
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "30"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "10"; }}
-              >
-                {/* Marker dot */}
+            {/* Markers — position follows the map, but visual size stays constant via scale compensation */}
+            {markers &&
+              markers.map((marker, i) => (
                 <div
-                  className="flex items-center justify-center rounded-full font-bold"
+                  key={i}
+                  className="absolute flex flex-col items-center"
+                  title={marker.label}
                   style={{
-                    width: markerSize,
-                    height: markerSize,
-                    background: marker.confirmed === false ? "transparent" : MARKER_COLORS[marker.type],
-                    border: `2px solid ${MARKER_COLORS[marker.type]}`,
-                    color: marker.confirmed === false ? MARKER_COLORS[marker.type] : "#fff",
-                    fontSize: markerFontSz,
-                    lineHeight: 1,
-                    boxShadow: `0 0 6px ${MARKER_COLORS[marker.type]}cc`,
+                    left: toLeft(marker.x),
+                    top: toTop(marker.y),
+                    transform: "translate(-50%, -50%)",
+                    zIndex: 10,
                   }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "30"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.zIndex = "10"; }}
                 >
-                  {marker.confirmed === false ? "?" : MARKER_SYMBOLS[marker.type]}
+                  {/* scale(1/zoom) cancels parent scale so dot/label stay same visual size */}
+                  <div
+                    className="flex flex-col items-center"
+                    style={{
+                      transform: `scale(${1 / zoom.scale})`,
+                      transformOrigin: "center center",
+                    }}
+                  >
+                    {/* Marker dot */}
+                    <div
+                      className="flex items-center justify-center rounded-full font-bold"
+                      style={{
+                        width: markerSize,
+                        height: markerSize,
+                        background: marker.confirmed === false ? "transparent" : MARKER_COLORS[marker.type],
+                        border: `2px solid ${MARKER_COLORS[marker.type]}`,
+                        color: marker.confirmed === false ? MARKER_COLORS[marker.type] : "#fff",
+                        fontSize: markerFontSz,
+                        lineHeight: 1,
+                        boxShadow: `0 0 6px ${MARKER_COLORS[marker.type]}cc`,
+                      }}
+                    >
+                      {marker.confirmed === false ? "?" : MARKER_SYMBOLS[marker.type]}
+                    </div>
+                    {/* Label */}
+                    <div
+                      className="text-center mt-0.5 px-1 rounded"
+                      style={{
+                        fontSize: labelFontSz,
+                        lineHeight: 1.3,
+                        color: MARKER_COLORS[marker.type],
+                        background: "rgba(5,10,18,0.92)",
+                        border: `1px solid ${MARKER_COLORS[marker.type]}55`,
+                        maxWidth: 90,
+                      }}
+                    >
+                      {marker.label}
+                    </div>
+                  </div>
                 </div>
-                {/* Label */}
-                <div
-                  className="text-center mt-0.5 px-1 rounded"
-                  style={{
-                    fontSize: labelFontSz,
-                    lineHeight: 1.3,
-                    color: MARKER_COLORS[marker.type],
-                    background: "rgba(5,10,18,0.92)",
-                    border: `1px solid ${MARKER_COLORS[marker.type]}55`,
-                    maxWidth: 90,
-                  }}
-                >
-                  {marker.label}
-                </div>
-              </div>
-            ))}
+              ))}
+          </div>
         </div>
       </div>
 
