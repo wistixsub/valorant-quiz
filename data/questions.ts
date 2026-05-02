@@ -315,7 +315,7 @@ export const QUESTIONS: Question[] = [
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
       { x: 76, y: 48, type: 'skill', label: 'セージのウォール', confirmed: true },
-      { x: 76, y: 24, type: 'ally', label: 'ケイオー（C）', confirmed: true },
+      { x: 70, y: 22, type: 'ally', label: 'ケイオー（C）', confirmed: true },
       { x: 50, y: 38, type: 'unknown', label: '守り×2（B）', confirmed: false },
       { x: 26, y: 28, type: 'unknown', label: '守り×2（A）', confirmed: false },
     ],
@@ -736,8 +736,8 @@ export const QUESTIONS: Question[] = [
     survival: { atk: ['Reyna', 'Jett'], def: ['Killjoy'] },
     buy: { atk: 'フルバイ', def: 'フルバイ' },
     markers: [
-      { x: 74, y: 22, type: 'skill', label: 'スパイク（Cサイト）', confirmed: true },
-      { x: 74, y: 24, type: 'enemy', label: 'レイナ', confirmed: true },
+      { x: 70, y: 22, type: 'skill', label: 'スパイク（Cサイト）', confirmed: true },
+      { x: 70, y: 24, type: 'enemy', label: 'レイナ', confirmed: true },
       { x: 52, y: 58, type: 'enemy', label: 'ジェット（CT）', confirmed: true },
       { x: 68, y: 38, type: 'ally', label: 'あなた（Killjoy）', confirmed: true },
     ],
