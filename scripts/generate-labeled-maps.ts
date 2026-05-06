@@ -51,7 +51,7 @@ const MAPS: MapConfig[] = [
       { x: 85.1, y: 41.8, label: 'Aシャワー' },
       { x: 75.9, y: 61.3, label: 'Aロビー' },
       { x: 49.4, y: 59.7, label: 'Aリンク' },
-      { x: 60.3, y: 38.8, label: 'A出口' },
+      { x: 60.3, y: 38.8, label: 'A入口' },
       { x: 39, y: 20.3, label: 'CT' },
     ],
   },

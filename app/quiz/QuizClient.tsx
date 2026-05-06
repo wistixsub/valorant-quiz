@@ -124,7 +124,15 @@ export default function QuizClient() {
   const router = useRouter();
   const mapId = params.get("map") ?? "bind";
   const map = getMap(mapId);
-  const [questions] = useState<Question[]>(() => shuffle(getQuestionsByMap(mapId)));
+  const debugId = params.get("debug") ? parseInt(params.get("debug")!, 10) : null;
+  const [questions] = useState<Question[]>(() => {
+    const all = getQuestionsByMap(mapId);
+    if (debugId !== null) {
+      const target = all.find((q) => q.id === debugId);
+      return target ? [target] : shuffle(all);
+    }
+    return shuffle(all);
+  });
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [answers, setAnswers] = useState<{ id: number; correct: boolean }[]>([]);
@@ -343,6 +351,14 @@ export default function QuizClient() {
           />
         </div>
         <div className="flex gap-1 flex-wrap justify-end">
+          {debugId !== null && (
+            <span
+              className="text-xs px-2 py-0.5 rounded font-mono font-bold"
+              style={{ background: "rgba(255,200,0,0.2)", color: "#FFD700", border: "1px solid rgba(255,200,0,0.4)" }}
+            >
+              DEV: ID={q.id}
+            </span>
+          )}
           <span
             className="text-xs px-2 py-0.5 rounded"
             style={{ background: "var(--surface2)", color: "var(--white)" }}
