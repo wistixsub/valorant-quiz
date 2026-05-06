@@ -56,14 +56,20 @@ body {
   opacity: 0.7;
 }
 
-/* ===== Quiz layout: map overlay sizing ===== */
-/* スマホ(md未満): マップはビューポートの40%以下に制限 */
+/* ===== Quiz layout ===== */
+/* スマホ: マップはビューポートの45%以下に制限 */
 .quiz-map-overlay {
-  max-height: 40svh;
+  max-height: 45svh;
 }
-/* PC(md以上): マップはカラム高さいっぱいに広げる */
+/* PC: 高さ制限なし / ボディを固定高さのスプリットペインにする */
 @media (min-width: 768px) {
   .quiz-map-overlay {
     max-height: none;
+  }
+  .quiz-body-wrapper {
+    /* flex: none で flex-1 (flex-basis:0%) が height を無視するのを防ぐ */
+    flex: none;
+    height: calc(100svh - var(--header-total-h, 98px));
+    overflow: hidden;
   }
 }
