@@ -43,3 +43,10 @@ next-env.d.ts
 # Claude Code
 CLAUDE.md
 AGENTS.md
+
+# Claude Code の環境固有設定
+.claude/settings.local.json
+
+# 作業用ファイル（リポジトリに含めない）
+修正依頼/
+test-results/

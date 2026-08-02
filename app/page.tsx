@@ -119,6 +119,27 @@ export default function Home() {
         </div>
       </div>
 
+      {/* 立ち回りガイドへの内部リンク（SEO・回遊） */}
+      <div className="w-full max-w-4xl mt-8">
+        <Link href="/guide/tachimawari">
+          <div
+            className="rounded p-4 flex items-center gap-3 transition-all hover:-translate-y-0.5"
+            style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+          >
+            <span className="text-xl">📖</span>
+            <div className="flex-1">
+              <p className="text-sm font-bold" style={{ color: "var(--white)" }}>
+                立ち回りが上手くなる「状況判断」5つの思考
+              </p>
+              <p className="text-xs" style={{ color: "var(--gray)" }}>
+                フェイク読み・ミッド優先・リテイク経路…論理で考えるコツを解説
+              </p>
+            </div>
+            <span className="text-xs" style={{ color: "var(--red)" }}>読む →</span>
+          </div>
+        </Link>
+      </div>
+
       <div className="mt-10 flex flex-col items-center gap-1">
         <p className="text-xs" style={{ color: "var(--gray)", opacity: 0.6 }}>
           Patch 12.05 対応

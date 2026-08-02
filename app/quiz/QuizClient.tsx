@@ -9,6 +9,13 @@ import { getAgent, getAgentNameJa } from "@/data/agents";
 import { Question } from "@/types/quiz";
 import MapOverlay from "./MapOverlay";
 
+// GA4 イベント送信（share_click / challenge_open / quiz_complete を計測）
+function track(event: string, params?: Record<string, unknown>) {
+  if (typeof window !== "undefined") {
+    (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag?.("event", event, params ?? {});
+  }
+}
+
 const DIFF_LABEL: Record<number, string> = { 1: "初級", 2: "中級", 3: "上級" };
 const DIFF_COLOR: Record<number, string> = {
   1: "var(--green)",
@@ -137,7 +144,12 @@ export default function QuizClient() {
   const [selected, setSelected] = useState<string | null>(null);
   const [answers, setAnswers] = useState<{ id: number; correct: boolean }[]>([]);
   const [done, setDone] = useState(false);
+  const [copied, setCopied] = useState(false);
   const rightColRef = useRef<HTMLDivElement>(null);
+
+  // 挑戦状（?challenge=スコア&total=問題数）。誰かのシェアリンクから来た時に表示
+  const challengeParam = params.get("challenge");
+  const challengeTotal = params.get("total");
 
   const q = questions[idx];
   const answered = selected !== null;
@@ -181,6 +193,49 @@ export default function QuizClient() {
       if (rightColRef.current) rightColRef.current.scrollTop = 0;
     }
   }, [idx, questions.length]);
+
+  // 挑戦状URL（受け取った人が「超えてやる」で必ずプレイ＝バイラルループ）
+  const buildChallengeUrl = useCallback(() => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    return `${origin}/quiz?map=${mapId}&challenge=${score}&total=${questions.length}&utm_source=challenge&utm_medium=share`;
+  }, [mapId, score, questions.length]);
+
+  const handleShare = useCallback(() => {
+    if (!map) return;
+    const url = buildChallengeUrl();
+    const text = `VALORANT論理テスト（${map.name}）で ${score}/${questions.length}・${rank.label}！君は超えられる？`;
+    const nav = typeof navigator !== "undefined" ? navigator : undefined;
+    if (nav?.share) {
+      track("share_click", { method: "web_share", map: mapId, score });
+      nav.share({ title: "VALORANT 論理テスト", text, url }).catch(() => {});
+    } else {
+      track("share_click", { method: "x_intent", map: mapId, score });
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+        "_blank",
+        "noopener"
+      );
+    }
+  }, [map, buildChallengeUrl, score, questions.length, rank.label, mapId]);
+
+  const handleCopyChallenge = useCallback(() => {
+    const url = buildChallengeUrl();
+    track("share_click", { method: "copy_challenge", map: mapId, score });
+    navigator.clipboard?.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
+  }, [buildChallengeUrl, mapId, score]);
+
+  // 完走したら quiz_complete を計測
+  useEffect(() => {
+    if (done) track("quiz_complete", { map: mapId, score, total: questions.length });
+  }, [done, mapId, score, questions.length]);
+
+  // 挑戦状から来たら challenge_open を計測
+  useEffect(() => {
+    if (challengeParam) track("challenge_open", { map: mapId, target: challengeParam });
+  }, [challengeParam, mapId]);
 
   if (!map) {
     return (
@@ -278,6 +333,32 @@ export default function QuizClient() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Share / 挑戦状（自己拡散ループ） */}
+          <div className="rounded p-4 mb-4" style={{ background: "var(--surface)", border: `1px solid ${rank.color}` }}>
+            <p className="text-sm font-bold mb-1" style={{ color: "var(--white)" }}>
+              結果をシェアして挑戦状を送ろう
+            </p>
+            <p className="text-xs mb-3" style={{ color: "var(--gray)" }}>
+              友達は君の {score}/{questions.length}（{rank.label}）を超えられる？
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                onClick={handleShare}
+                className="flex-1 py-2.5 rounded font-bold text-sm tracking-wider transition"
+                style={{ background: "var(--red)", color: "var(--white)", border: "none", cursor: "pointer" }}
+              >
+                📣 結果をシェア
+              </button>
+              <button
+                onClick={handleCopyChallenge}
+                className="flex-1 py-2.5 rounded text-sm transition"
+                style={{ background: "transparent", border: "1px solid var(--border)", color: copied ? "var(--green)" : "var(--gray)", cursor: "pointer" }}
+              >
+                {copied ? "✓ コピーしました" : "🔗 挑戦状リンクをコピー"}
+              </button>
+            </div>
           </div>
 
           <div className="flex gap-3">
@@ -406,6 +487,16 @@ export default function QuizClient() {
           ref={rightColRef}
           className="flex-1 md:overflow-y-auto px-3 py-4 flex flex-col gap-3"
         >
+          {/* 挑戦状バナー（誰かのシェアリンクから来た時） */}
+          {challengeParam && (
+            <div
+              className="rounded px-3 py-2 text-sm font-bold text-center"
+              style={{ background: "rgba(255,70,85,0.13)", border: "1px solid rgba(255,70,85,0.35)", color: "var(--red)" }}
+            >
+              🎯 挑戦状：{challengeTotal ? `${challengeParam}/${challengeTotal}` : `${challengeParam}点`} を超えろ！
+            </div>
+          )}
+
           {/* 操作キャラ・立場バナー */}
           <PlayerBanner playerAgent={q.playerAgent} playerSide={q.playerSide} />
 
